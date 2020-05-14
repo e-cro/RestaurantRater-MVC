@@ -50,7 +50,7 @@ namespace RestaurantRater.Controllers
             Restaurant restaurant = _db.Restaurants.Find(id);
             if (restaurant == null)
             {
-                return HttpNotFound();
+                return HttpNotFound();// could instead use "return new HttpStatusCodeResult(HttpStatusCode.NotFound);" similar to ~Line48
             }
             return View(restaurant);
         }
@@ -71,10 +71,10 @@ namespace RestaurantRater.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest); // could instead use "return HttpNotFound();" as in ~Line 79
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Restaurant restaurant = _db.Restaurants.Find(id);
-            if(restaurant == null)
+            if (restaurant == null)
             {
                 return HttpNotFound();
             }
@@ -94,5 +94,21 @@ namespace RestaurantRater.Controllers
             }
             return View(restaurant);
         }
+
+        //GET: Restaurant/Details/{id}
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Restaurant restaurant = _db.Restaurants.Find(id);
+            if (restaurant == null)
+            {
+                return HttpNotFound();
+            }
+            return View(restaurant);
+        }
     }
+
 }
