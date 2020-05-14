@@ -1,6 +1,7 @@
 ﻿using RestaurantRater.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -18,7 +19,7 @@ namespace RestaurantRater.Controllers
             return View(_db.Restaurants.ToList());
         }
 
-        // GET: Restaurant/Create  //(Adding [HttpGet] here is unnecessary)
+        // GET: Restaurant/Create  //(Per Josh's vide, adding [HttpGet] to the GETs is unnecessary/not required (why?))
         public ActionResult Create()
         {
             return View();
@@ -63,6 +64,35 @@ namespace RestaurantRater.Controllers
             _db.Restaurants.Remove(restaurant);
             _db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        //GET: Restaurant/Edit/{id}
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest); // could instead use "return HttpNotFound();" as in ~Line 79
+            }
+            Restaurant restaurant = _db.Restaurants.Find(id);
+            if(restaurant == null)
+            {
+                return HttpNotFound();
+            }
+            return View(restaurant);
+        }
+
+        //POST: Restaurant/Edit/{id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Restaurant restaurant)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Entry(restaurant).State = EntityState.Modified;
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(restaurant);
         }
     }
 }
